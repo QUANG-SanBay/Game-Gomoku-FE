@@ -1,0 +1,51 @@
+.game-container {
+  display: flex;
+  flex-direction: row;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.left-side {
+  flex: 7;
+  background-color: #e3a869;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.win-modal-overlay {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 999;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.win-modal-content {
+  background: white; padding: 40px 60px; border-radius: 20px;
+  text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  border: 3px solid #e3a869;
+  animation: popUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-play-again {
+  padding: 12px 35px; font-size: 1.1rem; font-weight: bold;
+  background: linear-gradient(135deg, #e62117 0%, #b31912 100%);
+  color: white; border: none; border-radius: 50px; cursor: pointer;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popUp { from { transform: scale(0.6); opacity: 0; } to { transform: scale(1); } }
+
+/* PHẦN RESPONSIVE CHO MOBILE */
+@media (max-width: 768px) {
+  .game-container { flex-direction: column; overflow-y: auto; }
+  .left-side { flex: none; width: 100%; padding: 20px 0; }
+  /* Quan trọng: Sửa lại right-side trong GameInfo.css để tương thích khi chuyển dọc */
+}
