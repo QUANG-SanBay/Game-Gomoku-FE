@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import BoardContainer from './board/BoardContainer'; // Import từ thư mục board mới
+import AppRoutes from "./routes/AppRoutes";
 
 function App() {
   return (
@@ -12,6 +13,10 @@ function App() {
       <BoardContainer initialSize={15} />
     </div>
   );
+}
+
+function App() {
+  return <AppRoutes />;
 }
 
 export default App;
