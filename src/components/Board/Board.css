@@ -1,26 +1,2 @@
-.board-wrapper {
-  position: relative; /* Để các nút đè lên bàn cờ */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.board {
-  display: grid;
-  background-color: #d19a5e; /* Màu nền gỗ */
-  border: 2px solid #222;    /* Viền ngoài bàn cờ */
-  box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
-}
-
-/* Căn chỉnh các nút CHỌN NƠI ở giữa bàn cờ */
-.overlay-controls {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  z-index: 10; /* Nằm trên bàn cờ */
-}
+.board-wrapper { position: relative; display: flex; justify-content: center; align-items: center; width: 100%; padding: 10px; }
+.board { background-color: #d19a5e; border: 2px solid #222; box-shadow: 0 10px 30px rgba(0,0,0,0.4); box-sizing: border-box; margin: 0 auto; gap: 0px; overflow: hidden; }

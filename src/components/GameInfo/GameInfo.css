@@ -85,7 +85,7 @@
   top: 10px;
 }
 
-/* Avatar và Stats */
+/* Avatar Box và Icon X/O */
 .profile-flex {
   display: flex;
   align-items: center;
@@ -100,13 +100,30 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 24px;
+  font-family: 'Arial Black', sans-serif; /* Font đậm cho X/O */
+  font-size: 26px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   border: 3px solid #eee;
+  transition: 0.3s;
+}
+
+/* Màu sắc đặc trưng cho X và O */
+.icon-x {
+  color: #3a7bd5; /* Xanh dương */
+}
+
+.icon-o {
+  color: #e62117; /* Đỏ */
 }
 
 .active-turn .avatar-box {
   border-color: #3a7bd5;
+  animation: pulseIcon 1s infinite alternate;
+}
+
+@keyframes pulseIcon {
+  from { transform: scale(1); }
+  to { transform: scale(1.1); }
 }
 
 .username {
@@ -204,6 +221,13 @@
   padding-left: 5px;
 }
 
-.history-item strong {
+/* Màu chữ X/O trong lịch sử */
+.txt-x {
   color: #3a7bd5;
+  font-weight: bold;
+}
+
+.txt-o {
+  color: #e62117;
+  font-weight: bold;
 }
