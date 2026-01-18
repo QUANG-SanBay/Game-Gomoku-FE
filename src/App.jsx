@@ -1,16 +1,36 @@
-import React from 'react';
-import './App.css';
-import BoardContainer from './board/BoardContainer'; // Import từ thư mục board mới
+import React from "react";
+import "./App.css";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+
+import BoardContainer from "./board/BoardContainer";
+import Login from "./pages/Login/Login";
+import Register from "./pages/Register/Register";
+import Navbar from "./components/Navbar";
+import { isLoggedIn } from "./utils/auth";
 
 function App() {
   return (
-    <div className="app-main">
-      {/* 
-          Hiện tại chúng ta gọi thẳng BoardContainer. 
-          Sau này nếu có Menu, bạn sẽ dùng Logic ở đây để chuyển giữa Menu và BoardContainer.
-      */}
-      <BoardContainer initialSize={15} />
-    </div>
+    <Router>
+      <div className="app-main">
+        {isLoggedIn() && <Navbar />}
+
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+
+          <Route
+            path="/"
+            element={
+              isLoggedIn() ? (
+                <BoardContainer initialSize={15} />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
