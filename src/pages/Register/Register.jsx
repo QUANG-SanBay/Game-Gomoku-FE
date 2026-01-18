@@ -7,11 +7,16 @@ function Register() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      setMessage("Mật khẩu nhập lại không khớp!");
+      return;
+    }
     try {
       await registerApi({
         full_name: fullName,
@@ -41,6 +46,7 @@ function Register() {
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               required
+              placeholder="Nhập họ và tên..."
             />
           </div>
 
@@ -52,6 +58,7 @@ function Register() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              placeholder="example@email.com"
             />
           </div>
 
@@ -63,6 +70,19 @@ function Register() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              placeholder="••••••••"
+            />
+          </div>
+
+          <div className="input-group">
+            <label>Nhập lại mật khẩu</label>
+            <input
+              type="password"
+              className="auth-input"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              placeholder="••••••••"
             />
           </div>
 
