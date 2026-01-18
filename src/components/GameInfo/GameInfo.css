@@ -207,3 +207,21 @@
 .history-item strong {
   color: #3a7bd5;
 }
+
+/* Nút Logout - Thêm vào cuối file */
+.btn-logout {
+  margin-top: auto; /* Đẩy xuống dưới cùng nếu container là flex column */
+  background: #ff4757;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  transition: 0.2s;
+  box-shadow: 0 4px 10px rgba(255, 71, 87, 0.3);
+}
+
+.btn-logout:hover {
+  background: #ff6b81;
+  transform: translateY(-2px);
+}
