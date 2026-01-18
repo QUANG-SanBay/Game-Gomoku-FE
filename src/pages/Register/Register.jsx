@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { registerApi } from "../../api/authApi";
 import "./Register.css";
 
@@ -7,6 +8,7 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -16,45 +18,62 @@ function Register() {
         email,
         password,
       });
-      setMessage("Đăng ký thành công! Vui lòng đăng nhập.");
+      alert("Đăng ký thành công! Vui lòng đăng nhập.");
+      navigate("/login");
     } catch (err) {
       setMessage("Đăng ký thất bại");
     }
   };
 
   return (
-    <div className="register-container">
-      <h2>Đăng ký</h2>
+    <div className="auth-overlay">
+      <div className="auth-box">
+        <h2 className="auth-title">Đăng Ký</h2>
 
-      {message && <p>{message}</p>}
+        {message && <p style={{color: 'red'}}>{message}</p>}
 
-      <form onSubmit={handleRegister}>
-        <input
-          type="text"
-          placeholder="Họ tên"
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
-          required
-        />
+        <form className="auth-form" onSubmit={handleRegister}>
+          <div className="input-group">
+            <label>Họ tên</label>
+            <input
+              type="text"
+              className="auth-input"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              required
+            />
+          </div>
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+          <div className="input-group">
+            <label>Email</label>
+            <input
+              type="email"
+              className="auth-input"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
 
-        <input
-          type="password"
-          placeholder="Mật khẩu"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+          <div className="input-group">
+            <label>Mật khẩu</label>
+            <input
+              type="password"
+              className="auth-input"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
 
-        <button type="submit">Đăng ký</button>
-      </form>
+          <button type="submit" className="auth-btn-primary">Đăng Ký</button>
+        </form>
+        
+        <div className="auth-switch-wrapper">
+          Đã có tài khoản?
+          <Link to="/login" className="auth-switch-btn">Đăng nhập</Link>
+        </div>
+      </div>
     </div>
   );
 }
