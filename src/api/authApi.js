@@ -11,12 +11,3 @@ export const loginApi = (data) => {
 export const registerApi = (data) => {
   return axios.post(`${API_URL}/auth/register/`, data);
 };
-
-export const isLoggedIn = () => {
-  return !!localStorage.getItem("token");
-};
-
-export const logout = () => {
-  localStorage.removeItem("token");
-  window.location.href = "/login";
-};
