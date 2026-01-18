@@ -7,68 +7,41 @@ export const useGameLogic = (initialSize = 15) => {
   const [isXNext, setIsXNext] = useState(true);
   const [winner, setWinner] = useState(null);
   const [history, setHistory] = useState([]);
-  const [myRole, setMyRole] = useState(null); 
+  const [myRole, setMyRole] = useState('X'); // BE gọi setMyRole khi join phòng
 
   const makeMove = useCallback((index, player) => {
-    // 1. Kiểm tra xem ô này đã có trong Board chưa (tránh ghi đè dữ liệu cũ)
     if (board[index] || winner) return;
-
-    // 2. Cập nhật Board
     const newBoard = [...board];
     newBoard[index] = player;
     setBoard(newBoard);
 
-    // 3. Tính tọa độ
     const row = Math.floor(index / size) + 1;
     const col = (index % size) + 1;
-
-    // 4. CẬP NHẬT LỊCH SỬ (Sửa lỗi nhân đôi tại đây)
-    setHistory((prevHistory) => {
-      // Kiểm tra nếu nước đi cuối cùng có cùng tọa độ thì không thêm nữa
-      const lastMove = prevHistory[prevHistory.length - 1];
-      if (lastMove && lastMove.row === row && lastMove.col === col) {
-        return prevHistory; 
-      }
-      
-      return [...prevHistory, {
-        step: prevHistory.length + 1,
-        player: player,
-        row: row,
-        col: col
-      }];
+    setHistory(prev => {
+      const last = prev[prev.length - 1];
+      if (last && last.row === row && last.col === col) return prev;
+      return [...prev, { step: prev.length + 1, player, row, col }];
     });
 
-    // 5. Kiểm tra thắng thua
     const win = checkWinner(newBoard, index, size);
-    if (win) {
-      setWinner(win);
-    } else {
-      setIsXNext(player === 'X' ? false : true);
-    }
-  }, [board, size, winner]); // Thêm board vào dependency
+    if (win) setWinner(win);
+    else setIsXNext(player === 'X' ? false : true);
+  }, [board, size, winner]);
 
   const handleClick = (index) => {
     if (board[index] || winner) return;
-
     const currentPlayer = isXNext ? 'X' : 'O';
-    
-    // Nếu chơi offline (chưa có socket)
-    if (!window.socketConnected) {
-      makeMove(index, currentPlayer);
-    } else {
-      // Nếu có socket thì gửi đi (BE sẽ lo việc gọi ngược lại hàm makeMove)
-      // window.sendSocketMove(index, currentPlayer);
-    }
+    if (myRole && currentPlayer !== myRole) return; // Chặn đánh thay đối thủ
+
+    if (!window.socketConnected) makeMove(index, currentPlayer);
+    else window.sendSocketMove?.(index, currentPlayer); // Điểm nối Socket
   };
 
   const resetGame = (newSize) => {
     const s = newSize || size;
-    setSize(s);
-    setBoard(Array(s * s).fill(null));
-    setIsXNext(true);
-    setWinner(null);
-    setHistory([]);
+    setSize(s); setBoard(Array(s * s).fill(null));
+    setIsXNext(true); setWinner(null); setHistory([]);
   };
 
-  return { board, size, isXNext, winner, history, handleClick, resetGame, makeMove, setMyRole };
+  return { board, size, isXNext, winner, history, handleClick, resetGame, makeMove, myRole, setMyRole };
 };
