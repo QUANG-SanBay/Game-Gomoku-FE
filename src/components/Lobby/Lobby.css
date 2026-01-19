@@ -56,4 +56,12 @@
     justify-content: space-between;
     margin: 8px 0;
   }
-  
+  /* chỉ áp dụng khi form có class vertical */
+.create-room.vertical {
+  flex-direction: column;
+}
+
+/* input chiếm full chiều ngang */
+.create-room.vertical input {
+  width: 100%;
+}
