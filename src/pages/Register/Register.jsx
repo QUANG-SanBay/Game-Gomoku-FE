@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { registerApi } from "../../api/authApi";
+import { register } from "../../api/authService";
 import "./Register.css";
 
 function Register() {
@@ -18,15 +18,16 @@ function Register() {
       return;
     }
     try {
-      await registerApi({
+      await register({
         full_name: fullName,
         email,
         password,
+        confirm_password: confirmPassword,
       });
       alert("Đăng ký thành công! Vui lòng đăng nhập.");
       navigate("/login");
     } catch (err) {
-      setMessage("Đăng ký thất bại");
+      setMessage(err.response?.data?.message || "Đăng ký thất bại");
     }
   };
 

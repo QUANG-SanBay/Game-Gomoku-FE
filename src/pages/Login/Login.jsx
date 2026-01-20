@@ -1,38 +1,50 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { login } from '../../api/authService';
 import './Login.css';
 
 const Login = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // --- LOGIC ĐĂNG NHẬP CỦA BẠN SẼ Ở ĐÂY ---
-    // Ví dụ: gọi API, lưu token vào localStorage, rồi chuyển hướng
-    console.log('Đăng nhập với:', username, password);
-    
-    // Giả sử đăng nhập thành công, bạn lưu token
-    // localStorage.setItem('your_auth_token', 'some_jwt_token');
-    
-    navigate('/'); // Chuyển hướng về trang chủ (bàn cờ)
+    setError('');
+    setLoading(true);
+
+    try {
+      await login({ email, password });
+      // Token đã được tự động lưu bởi authService.login()
+      // Reload trang để App.jsx kiểm tra lại isLoggedIn()
+      window.location.href = '/';
+    } catch (err) {
+      setError(err.response?.data?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="auth-overlay">
       <div className="auth-box">
         <h2 className="auth-title">Đăng Nhập</h2>
+
+        {error && <p style={{ color: 'red', marginBottom: '10px' }}>{error}</p>}
+
         <form className="auth-form" onSubmit={handleLogin}>
           <div className="input-group">
-            <label>Tên đăng nhập</label>
+            <label>Email</label>
             <input
-              type="text"
+              type="email"
               className="auth-input"
-              placeholder="Nhập tên của bạn..."
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              placeholder="example@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
           <div className="input-group">
@@ -44,9 +56,12 @@ const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
-          <button type="submit" className="auth-btn-primary">Vào Game Ngay</button>
+          <button type="submit" className="auth-btn-primary" disabled={loading}>
+            {loading ? 'Đang đăng nhập...' : 'Vào Game Ngay'}
+          </button>
         </form>
         <div className="auth-switch-wrapper">
           Chưa có tài khoản?
