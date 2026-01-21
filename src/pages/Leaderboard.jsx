@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getLeaderboard } from "../api/userService";
 import "./Leaderboard.css";
 
-export default function Leaderboard({ onBack, onViewProfile }) {
+export default function Leaderboard() {
+  const navigate = useNavigate();
   const [players, setPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -25,7 +27,7 @@ export default function Leaderboard({ onBack, onViewProfile }) {
   return (
     <div className="leaderboard-bg">
       <div className="leaderboard-card">
-        <button className="back-btn" onClick={onBack}>
+        <button className="back-btn" onClick={() => navigate("/")}>
           ⬅ Menu
         </button>
 
@@ -50,16 +52,17 @@ export default function Leaderboard({ onBack, onViewProfile }) {
             <tbody>
               {players.map((p, i) => (
                 <tr 
-                  key={i}
-                  onClick={() => onViewProfile?.(p.id)}
-                  style={{ cursor: onViewProfile ? "pointer" : "default" }}
+                  key={p.id}
+                  onClick={() => navigate(`/user/${p.id}`)}
+                  className="clickable-row"
+                  style={{ cursor: "pointer" }}
                 >
                   <td>{i + 1}</td>
-                  <td>{p.username || p.full_name}</td>
+                  <td>{p.full_name}</td>
                   <td>{p.elo}</td>
                   <td>{p.wins}</td>
-                  <td>{p.losses || 0}</td>
-                  <td>{p.draws || 0}</td>
+                  <td>{p.losses}</td>
+                  <td>{p.draws}</td>
                 </tr>
               ))}
             </tbody>

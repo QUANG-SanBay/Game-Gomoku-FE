@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   socket,
   connectSocket,
@@ -6,7 +7,8 @@ import {
 } from "../../socket/socket";
 import "./Lobby.css";
 
-export default function Lobby({ onStart, onBack }) {
+export default function Lobby() {
+  const navigate = useNavigate();
   const [roomName, setRoomName] = useState("");
   const [password, setPassword] = useState("");
   const [rooms, setRooms] = useState([]);
@@ -20,16 +22,20 @@ export default function Lobby({ onStart, onBack }) {
       socket.emit("getRooms");
     };
 
+    const handleJoinedRoom = () => {
+      navigate("/game");
+    };
+
     socket.on("connect", handleConnect);
     socket.on("roomList", setRooms);
-    socket.on("joinedRoom", onStart);
+    socket.on("joinedRoom", handleJoinedRoom);
     socket.on("errorMsg", alert);
 
     return () => {
       socket.off();
       disconnectSocket();
     };
-  }, [onStart]);
+  }, [navigate]);
 
   const createRoom = (e) => {
     e.preventDefault();
@@ -54,7 +60,7 @@ export default function Lobby({ onStart, onBack }) {
   return (
     <div className="lobby-bg">
       <div className="lobby-card">
-        <button className="back-btn" onClick={onBack}>⬅ Menu</button>
+        <button className="back-btn" onClick={() => navigate("/")}>⬅ Menu</button>
 
         <h1>🎮 Gomoku</h1>
 

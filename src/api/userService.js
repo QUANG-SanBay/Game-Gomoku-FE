@@ -2,7 +2,7 @@ import axiosClient from "./axiosClient";
 
 // Lấy bảng xếp hạng người chơi (Top ELO)
 // GET /api/users/leaderboard/
-// Response: [{ username, elo, wins }]
+// Response: [{ id, full_name, elo, wins, losses, draws }]
 export const getLeaderboard = () => axiosClient.get("/users/leaderboard/");
 
 // Xem profile người chơi khác

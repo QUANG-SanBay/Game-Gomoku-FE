@@ -1,18 +1,24 @@
+import { useNavigate } from "react-router-dom";
 import ProfileDashboard from "../components/ProfileDashboard/ProfileDashboard";
+import { logout } from "../utils/auth";
 import "./MainMenu.css";
 
-export default function MainMenu({
-  onPlayOnline,
-  onLeaderboard,
-  onMyProfile, // ✅ thêm prop này
-}) {
+export default function MainMenu() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    if (window.confirm("Đăng xuất khỏi game?")) {
+      logout();
+    }
+  };
+
   return (
     <div className="mainmenu-bg">
       {/* PROFILE GÓC PHẢI */}
       <div
         className="profile-top-right"
-        onClick={onMyProfile}          // ✅ CLICK ĐƯỢC
-        style={{ cursor: "pointer" }} // ✅ hiển thị tay
+        onClick={() => navigate("/profile")}
+        style={{ cursor: "pointer" }}
       >
         <ProfileDashboard compact />
       </div>
@@ -21,23 +27,29 @@ export default function MainMenu({
       <div className="menu-center">
         <button
           className="menu-btn primary"
-          onClick={onPlayOnline}
+          onClick={() => navigate("/lobby")}
         >
           ▶ Chơi Online
         </button>
 
-        <button className="menu-btn">
+        <button 
+          className="menu-btn"
+          onClick={() => alert("Tính năng đang phát triển")}
+        >
           🤖 Đấu với máy
         </button>
 
         <button
           className="menu-btn"
-          onClick={onLeaderboard}
+          onClick={() => navigate("/leaderboard")}
         >
           🏆 Bảng xếp hạng
         </button>
 
-        <button className="menu-btn danger">
+        <button 
+          className="menu-btn danger"
+          onClick={handleLogout}
+        >
           Đăng xuất
         </button>
       </div>
