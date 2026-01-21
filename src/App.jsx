@@ -5,26 +5,46 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import BoardContainer from "./board/BoardContainer";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
+import GameRoom from "./pages/GameRoom/GameRoom";
 import Navbar from "./components/Navbar";
 import { isLoggedIn } from "./utils/auth";
 
 function App() {
+  const loggedIn = isLoggedIn();
+
   return (
     <Router>
       <div className="app-main">
-        {isLoggedIn() && <Navbar />}
+        {loggedIn && <Navbar />}
 
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route
+            path="/login"
+            element={loggedIn ? <Navigate to="/" replace /> : <Login />}
+          />
+          <Route
+            path="/register"
+            element={loggedIn ? <Navigate to="/" replace /> : <Register />}
+          />
 
           <Route
             path="/"
             element={
-              isLoggedIn() ? (
+              loggedIn ? (
                 <BoardContainer initialSize={15} />
               ) : (
-                <Navigate to="/login" />
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+
+          <Route
+            path="/game"
+            element={
+              loggedIn ? (
+                <GameRoom />
+              ) : (
+                <Navigate to="/login" replace />
               )
             }
           />
