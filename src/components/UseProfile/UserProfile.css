@@ -1,0 +1,17 @@
+.actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .actions button {
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .danger {
+    background: #c0392b;
+    color: white;
+  }
+  

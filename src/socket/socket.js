@@ -1,30 +1,19 @@
 import { io } from "socket.io-client";
 
-// Khởi tạo Socket.IO client với authentication
-const socket = io("http://localhost:8000", {
-  transports: ["websocket"],
+const SOCKET_URL = "http://localhost:3000";
+
+export const socket = io(SOCKET_URL, {
   autoConnect: false,
-  auth: (cb) => {
-    // Lấy token từ localStorage khi connect
-    const token = localStorage.getItem("access_token");
-    cb({ token });
-  },
+  transports: ["websocket"],
 });
 
-// Kết nối socket với JWT token
+// ✅ Helper an toàn
 export const connectSocket = () => {
   if (!socket.connected) {
-    const token = localStorage.getItem("access_token");
-    if (!token) {
-      console.error("Không tìm thấy access token. Vui lòng đăng nhập.");
-      return;
-    }
-    socket.auth = { token };
     socket.connect();
   }
 };
 
-// Ngắt kết nối socket
 export const disconnectSocket = () => {
   if (socket.connected) {
     socket.disconnect();

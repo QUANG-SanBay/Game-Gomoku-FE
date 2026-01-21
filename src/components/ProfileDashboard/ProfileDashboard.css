@@ -1,0 +1,54 @@
+.profile-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  
+    background: #1e1e2f;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 14px;
+  
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  }
+  
+  /* AVATAR */
+  .avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #f1c40f;
+  }
+  
+  /* INFO */
+  .profile-info {
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+  }
+  
+  /* STATS */
+  .stats {
+    display: flex;
+    gap: 8px;
+    margin-top: 2px;
+    font-size: 11px;
+  }
+  
+  .stats .win {
+    color: #4caf50;
+  }
+  
+  .stats .loss {
+    color: #e53935;
+  }
+  
+  .stats .draw {
+    color: #f1c40f;
+  }
+  
+  /* COMPACT */
+  .profile-card.compact {
+    padding: 8px 12px;
+  }
+  

@@ -1,12 +1,20 @@
-import Navbar from "../components/Navbar";
+import { useState } from "react";
+import ProfileDashboard from "../components/ProfileDashboard";
+import Lobby from "../components/Lobby";
 
 function Home() {
+  const [screen, setScreen] = useState("menu"); 
+  // menu | lobby
+
   return (
     <>
-      <Navbar />
-      <h1 style={{ textAlign: "center", marginTop: "50px" }}>
-        🎮 Chào mừng đến Game Gomoku
-      </h1>
+      {screen === "menu" && (
+        <ProfileDashboard onPlay={() => setScreen("lobby")} />
+      )}
+
+      {screen === "lobby" && (
+        <Lobby onBack={() => setScreen("menu")} />
+      )}
     </>
   );
 }
