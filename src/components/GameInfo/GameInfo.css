@@ -1,0 +1,233 @@
+/* Sidebar Tổng thể */
+.right-side {
+  flex: 3;
+  background: linear-gradient(180deg, #f0f7ff 0%, #a2d2f2 100%);
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  gap: 15px;
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Header Phòng */
+.room-header {
+  background: linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%);
+  color: white;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(58, 123, 213, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.room-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  letter-spacing: 0.5px;
+}
+
+.waiting-timer {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: #fffb00;
+  font-family: 'Monaco', monospace;
+}
+
+.room-host {
+  font-size: 0.8rem;
+  margin-top: 6px;
+  opacity: 0.9;
+}
+
+/* Thẻ Người Chơi */
+.user-profile {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  padding: 15px;
+  border-radius: 16px;
+  border: 2px solid transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.user-profile.active-turn {
+  background: white;
+  border-color: #3a7bd5;
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 10px 20px rgba(58, 123, 213, 0.15);
+}
+
+/* Nhãn Lượt đi */
+.turn-label {
+  position: absolute;
+  top: -10px;
+  right: 15px;
+  background: #28a745;
+  color: white;
+  font-size: 10px;
+  font-weight: 900;
+  padding: 4px 10px;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.active-turn .turn-label {
+  opacity: 1;
+  top: 10px;
+}
+
+/* Avatar Box và Icon X/O */
+.profile-flex {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.avatar-box {
+  width: 50px;
+  height: 50px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Arial Black', sans-serif; /* Font đậm cho X/O */
+  font-size: 26px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border: 3px solid #eee;
+  transition: 0.3s;
+}
+
+/* Màu sắc đặc trưng cho X và O */
+.icon-x {
+  color: #3a7bd5; /* Xanh dương */
+}
+
+.icon-o {
+  color: #e62117; /* Đỏ */
+}
+
+.active-turn .avatar-box {
+  border-color: #3a7bd5;
+  animation: pulseIcon 1s infinite alternate;
+}
+
+@keyframes pulseIcon {
+  from { transform: scale(1); }
+  to { transform: scale(1.1); }
+}
+
+.username {
+  font-weight: 800;
+  color: #2c3e50;
+  font-size: 1rem;
+}
+
+.elo-tag {
+  font-size: 0.8rem;
+  color: #e74c3c;
+  font-weight: bold;
+  margin: 2px 0;
+}
+
+.stat-row {
+  display: flex;
+  gap: 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.stat-win { color: #2ecc71; }
+.stat-loss { color: #e74c3c; }
+.stat-draw { color: #95a5a6; }
+
+/* Divider VS */
+.vs-divider {
+  text-align: center;
+  font-weight: 900;
+  color: #7f8c8d;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.vs-divider::before, .vs-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* Trạng thái bàn cờ */
+.status-box {
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #34495e;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Lịch sử nước cờ */
+.history {
+  flex: 1;
+  background: white;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.history-title {
+  padding: 12px 15px;
+  background: #f8f9fa;
+  font-weight: 800;
+  color: #2c3e50;
+  border-bottom: 1px solid #eee;
+  font-size: 0.85rem;
+}
+
+.history-list {
+  padding: 10px 15px;
+  overflow-y: auto;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #f1f1f1;
+  font-size: 13px;
+  color: #555;
+  transition: 0.2s;
+}
+
+.history-item:hover {
+  background: #f9f9f9;
+  padding-left: 5px;
+}
+
+/* Màu chữ X/O trong lịch sử */
+.txt-x {
+  color: #3a7bd5;
+  font-weight: bold;
+}
+
+.txt-o {
+  color: #e62117;
+  font-weight: bold;
+}
