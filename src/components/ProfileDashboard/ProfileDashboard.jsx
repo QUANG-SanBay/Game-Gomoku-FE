@@ -1,6 +1,6 @@
 import "./ProfileDashboard.css";
 
-export default function ProfileDashboard({ compact }) {
+export default function ProfileDashboard({ compact = false }) {
   const user = {
     full_name: "Nguyễn Văn A",
     wins: 0,

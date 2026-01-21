@@ -4,11 +4,16 @@ import "./MainMenu.css";
 export default function MainMenu({
   onPlayOnline,
   onLeaderboard,
+  onMyProfile, // ✅ thêm prop này
 }) {
   return (
     <div className="mainmenu-bg">
       {/* PROFILE GÓC PHẢI */}
-      <div className="profile-top-right">
+      <div
+        className="profile-top-right"
+        onClick={onMyProfile}          // ✅ CLICK ĐƯỢC
+        style={{ cursor: "pointer" }} // ✅ hiển thị tay
+      >
         <ProfileDashboard compact />
       </div>
 
