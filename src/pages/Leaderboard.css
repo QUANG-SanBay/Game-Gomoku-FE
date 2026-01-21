@@ -48,6 +48,7 @@
     border-radius: 8px;
     font-weight: 600;
     transition: all 0.3s ease;
+    max-width: 120px;
   }
 
   .back-btn:hover {

@@ -32,13 +32,6 @@ export default function MainMenu() {
           🏠 Danh sách phòng
         </button>
 
-        <button 
-          className="menu-btn"
-          onClick={() => navigate("/offline")}
-        >
-          🤖 Đấu với máy
-        </button>
-
         <button
           className="menu-btn"
           onClick={() => navigate("/leaderboard")}
