@@ -21,7 +21,35 @@ const Login = () => {
       // Reload trang để App.jsx kiểm tra lại isLoggedIn()
       window.location.href = '/';
     } catch (err) {
-      setError(err.response?.data?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
+      // Parse error từ backend
+      if (err.response?.data) {
+        const errorData = err.response.data;
+        
+        // Kiểm tra non_field_errors (lỗi chung)
+        if (errorData.non_field_errors && errorData.non_field_errors.length > 0) {
+          setError(errorData.non_field_errors[0]);
+        }
+        // Kiểm tra detail (lỗi từ DRF)
+        else if (errorData.detail) {
+          setError(errorData.detail);
+        }
+        // Kiểm tra message (custom message)
+        else if (errorData.message) {
+          setError(errorData.message);
+        }
+        // Nếu có lỗi specific field, lấy lỗi đầu tiên
+        else {
+          const firstErrorKey = Object.keys(errorData)[0];
+          if (firstErrorKey && errorData[firstErrorKey]) {
+            const errorValue = errorData[firstErrorKey];
+            setError(Array.isArray(errorValue) ? errorValue[0] : errorValue);
+          } else {
+            setError('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
+          }
+        }
+      } else {
+        setError('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
+      }
     } finally {
       setLoading(false);
     }

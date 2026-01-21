@@ -27,7 +27,6 @@ function App() {
         />
 
         <Route
-        <Route
           path="/"
           element={loggedIn ? <Home /> : <Navigate to="/login" replace />}
         />
