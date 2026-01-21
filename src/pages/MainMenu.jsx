@@ -27,14 +27,14 @@ export default function MainMenu() {
       <div className="menu-center">
         <button
           className="menu-btn primary"
-          onClick={() => navigate("/lobby")}
+          onClick={() => navigate("/rooms")}
         >
-          ▶ Chơi Online
+          🏠 Danh sách phòng
         </button>
 
         <button 
           className="menu-btn"
-          onClick={() => alert("Tính năng đang phát triển")}
+          onClick={() => navigate("/offline")}
         >
           🤖 Đấu với máy
         </button>

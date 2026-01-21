@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './GameRoom.css';
 import BoardGrid from '../../components/Board/Board';
 import GameInfo from '../../components/GameInfo/GameInfo';
 import { useGameLogic } from '../../hooks/useGameLogic';
@@ -66,6 +65,8 @@ function GameBoardWithSocket({ roomId, roomInfo }) {
           host: roomInfo?.host_name || "...",
           waitingTime: gameStarted ? "Đang chơi" : "Chờ đối thủ"
         }}
+        userRole={myRole || 'X'}
+        opponentRole={myRole === 'X' ? 'O' : 'X'}
         userData={{
           ...user,
           username: `Bạn (${myRole})`

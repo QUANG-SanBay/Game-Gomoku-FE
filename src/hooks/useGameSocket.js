@@ -4,6 +4,9 @@ import socket, { connectSocket } from '../socket/socket';
 export const useGameSocket = (roomId, makeMove, setMyRole, resetGame) => {
   const [gameStarted, setGameStarted] = useState(false);
   const [roomInfo, setRoomInfo] = useState(null);
+  const [connectionStatus, setConnectionStatus] = useState('connecting');
+  const boardSizeRef = useRef(15);
+  const reconnectTimerRef = useRef(null);
 
   // Store callbacks in refs to avoid stale closures
   const makeMoveRef = useRef(makeMove);
@@ -17,6 +20,7 @@ export const useGameSocket = (roomId, makeMove, setMyRole, resetGame) => {
     setMyRoleRef.current = setMyRole;
     resetGameRef.current = resetGame;
     roomIdRef.current = roomId;
+    boardSizeRef.current = boardSizeRef.current || 15;
   });
 
   // Setup socket connection và event listeners
@@ -31,18 +35,63 @@ export const useGameSocket = (roomId, makeMove, setMyRole, resetGame) => {
 
     // Hàm gửi nước đi qua socket
     window.sendSocketMove = (index, player) => {
-      const row = Math.floor(index / 15);
-      const col = index % 15;
+      const size = boardSizeRef.current || 15;
+      const row = Math.floor(index / size);
+      const col = index % size;
       console.log('🚀 Sending move:', { room_id: roomIdRef.current, row, col, player });
       console.log('🔌 Socket connected:', socket.connected);
       socket.emit('make_move', { room_id: roomIdRef.current, row, col });
     };
 
     // Event handlers - sử dụng refs để tránh stale closures
+    const clearReconnectTimer = () => {
+      if (reconnectTimerRef.current) {
+        clearTimeout(reconnectTimerRef.current);
+        reconnectTimerRef.current = null;
+      }
+    };
+
+    const handleConnected = () => {
+      setConnectionStatus('connected');
+      window.socketConnected = true;
+      // Join (or re-join) room
+      if (roomIdRef.current) {
+        socket.emit('join_room', { room_id: parseInt(roomIdRef.current) });
+      }
+    };
+
+    const handleDisconnected = () => {
+      setConnectionStatus('disconnected');
+      window.socketConnected = false;
+      // Cho phép 30s để tái kết nối
+      if (!reconnectTimerRef.current) {
+        reconnectTimerRef.current = setTimeout(() => {
+          // quá hạn, báo lỗi để UI xử lý
+          socket.emit('leave_room', { room_id: parseInt(roomIdRef.current) });
+        }, 30000);
+      }
+    };
+
+    const handleReconnectAttempt = () => {
+      setConnectionStatus('reconnecting');
+    };
+
+    const handleReconnect = () => {
+      setConnectionStatus('connected');
+      window.socketConnected = true;
+      clearReconnectTimer();
+      if (roomIdRef.current) {
+        socket.emit('join_room', { room_id: parseInt(roomIdRef.current) });
+      }
+    };
+
     const handleJoinedRoom = (data) => {
       console.log('✅ Joined room:', data);
       setRoomInfo(data);
       setMyRoleRef.current(data.player_symbol);
+      if (data.board_size) boardSizeRef.current = data.board_size;
+      setConnectionStatus('connected');
+      clearReconnectTimer();
     };
 
     const handlePlayerJoined = (data) => {
@@ -52,13 +101,15 @@ export const useGameSocket = (roomId, makeMove, setMyRole, resetGame) => {
     const handleGameStart = (data) => {
       console.log('🎮 Game started:', data);
       setGameStarted(true);
+      boardSizeRef.current = data.board_size || boardSizeRef.current;
       resetGameRef.current(data.board_size);
     };
 
     const handleMoveMade = (data) => {
       console.log('♟️ Move made received:', data);
       const { row, col, player } = data;
-      const index = row * 15 + col;
+      const size = boardSizeRef.current || 15;
+      const index = row * size + col;
       console.log('📍 Calculated index:', index, 'player:', player);
       if (makeMoveRef.current) {
         makeMoveRef.current(index, player);
@@ -70,6 +121,7 @@ export const useGameSocket = (roomId, makeMove, setMyRole, resetGame) => {
 
     const handleGameOver = (data) => {
       console.log('🏁 Game over:', data);
+      clearReconnectTimer();
     };
 
     const handleError = (data) => {
@@ -77,6 +129,10 @@ export const useGameSocket = (roomId, makeMove, setMyRole, resetGame) => {
     };
 
     // Xóa listeners cũ trước khi đăng ký mới (tránh duplicate)
+    socket.off('connect', handleConnected);
+    socket.off('disconnect', handleDisconnected);
+    socket.off('reconnect_attempt', handleReconnectAttempt);
+    socket.off('reconnect', handleReconnect);
     socket.off('joined_room', handleJoinedRoom);
     socket.off('player_joined', handlePlayerJoined);
     socket.off('game_start', handleGameStart);
@@ -85,6 +141,10 @@ export const useGameSocket = (roomId, makeMove, setMyRole, resetGame) => {
     socket.off('error', handleError);
 
     // Đăng ký event listeners
+    socket.on('connect', handleConnected);
+    socket.on('disconnect', handleDisconnected);
+    socket.on('reconnect_attempt', handleReconnectAttempt);
+    socket.on('reconnect', handleReconnect);
     socket.on('joined_room', handleJoinedRoom);
     socket.on('player_joined', handlePlayerJoined);
     socket.on('game_start', handleGameStart);
@@ -92,13 +152,20 @@ export const useGameSocket = (roomId, makeMove, setMyRole, resetGame) => {
     socket.on('game_over', handleGameOver);
     socket.on('error', handleError);
 
-    // Join room qua socket
-    console.log('📤 Emitting join_room for room:', roomId);
-    socket.emit('join_room', { room_id: roomId });
+    // Join room qua socket (nếu đã connected)
+    if (socket.connected) {
+      console.log('📤 Emitting join_room for room:', roomId);
+      socket.emit('join_room', { room_id: roomId });
+    }
 
     // Cleanup
     return () => {
       console.log('🧹 useGameSocket cleanup for room:', roomId);
+      clearReconnectTimer();
+      socket.off('connect', handleConnected);
+      socket.off('disconnect', handleDisconnected);
+      socket.off('reconnect_attempt', handleReconnectAttempt);
+      socket.off('reconnect', handleReconnect);
       socket.off('joined_room', handleJoinedRoom);
       socket.off('player_joined', handlePlayerJoined);
       socket.off('game_start', handleGameStart);
@@ -108,5 +175,5 @@ export const useGameSocket = (roomId, makeMove, setMyRole, resetGame) => {
     };
   }, [roomId]);
 
-  return { gameStarted, roomInfo };
+  return { gameStarted, roomInfo, connectionStatus };
 };

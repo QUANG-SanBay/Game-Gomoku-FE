@@ -1,15 +1,24 @@
 import React from 'react';
 import './GameInfo.css';
-const GameInfo = ({ roomData, userData, opponentData, isXNext, size, history }) => (
+const GameInfo = ({
+  roomData,
+  userData,
+  opponentData,
+  userRole = 'X',
+  opponentRole = 'O',
+  isXNext,
+  size,
+  history
+}) => (
   <div className="right-side">
     <div className="room-header">
       <div className="room-title"><span>🏠 {roomData.name}</span><span className="waiting-timer">{roomData.waitingTime}</span></div>
       <div className="room-host">Chủ phòng: <strong>{roomData.host}</strong></div>
     </div>
-    <div className={`user-profile ${isXNext ? 'active-turn' : ''}`}>
+    <div className={`user-profile ${(isXNext && userRole === 'X') || (!isXNext && userRole === 'O') ? 'active-turn' : ''}`}>
       <div className="turn-label">LƯỢT ĐI</div>
       <div className="profile-flex">
-        <div className="avatar-box icon-x">X</div>
+        <div className={`avatar-box ${userRole === 'X' ? 'icon-x' : 'icon-o'}`}>{userRole}</div>
         <div className="user-stats">
           <div className="username">{userData.username}</div>
           <div className="elo-tag">🏆 ELO: {userData.elo}</div>
@@ -18,10 +27,10 @@ const GameInfo = ({ roomData, userData, opponentData, isXNext, size, history }) 
       </div>
     </div>
     <div className="vs-divider">VS</div>
-    <div className={`user-profile ${!isXNext ? 'active-turn' : ''}`}>
+    <div className={`user-profile ${(isXNext && opponentRole === 'X') || (!isXNext && opponentRole === 'O') ? 'active-turn' : ''}`}>
       <div className="turn-label">LƯỢT ĐI</div>
       <div className="profile-flex">
-        <div className="avatar-box icon-o">O</div>
+        <div className={`avatar-box ${opponentRole === 'X' ? 'icon-x' : 'icon-o'}`}>{opponentRole}</div>
         <div className="user-stats">
           <div className="username">{opponentData.username}</div>
           <div className="elo-tag">🏆 ELO: {opponentData.elo}</div>

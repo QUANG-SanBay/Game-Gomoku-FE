@@ -7,7 +7,7 @@ export const useGameLogic = (initialSize = 15) => {
   const [isXNext, setIsXNext] = useState(true);
   const [winner, setWinner] = useState(null);
   const [history, setHistory] = useState([]);
-  const [myRole, setMyRole] = useState('X'); // BE gọi setMyRole khi join phòng
+  const [myRole, setMyRole] = useState(null); // null = offline mode, 'X'/'O' = online mode
 
   const makeMove = useCallback((index, player) => {
     if (board[index] || winner) return;
@@ -31,10 +31,18 @@ export const useGameLogic = (initialSize = 15) => {
   const handleClick = (index) => {
     if (board[index] || winner) return;
     const currentPlayer = isXNext ? 'X' : 'O';
-    if (myRole && currentPlayer !== myRole) return; // Chặn đánh thay đối thủ
+    
+    // Offline mode: cho phép đánh cả X và O
+    if (myRole === null) {
+      makeMove(index, currentPlayer);
+      return;
+    }
+    
+    // Online mode: chỉ đánh khi đúng lượt
+    if (currentPlayer !== myRole) return;
 
     if (!window.socketConnected) makeMove(index, currentPlayer);
-    else window.sendSocketMove?.(index, currentPlayer); // Điểm nối Socket
+    else window.sendSocketMove?.(index, currentPlayer);
   };
 
   const resetGame = (newSize) => {
@@ -43,5 +51,17 @@ export const useGameLogic = (initialSize = 15) => {
     setIsXNext(true); setWinner(null); setHistory([]);
   };
 
-  return { board, size, isXNext, winner, history, handleClick, resetGame, makeMove, myRole, setMyRole };
+  // Đồng bộ lại bàn cờ từ server (khi reconnect)
+  const hydrateBoard = (matrix, currentTurn = 'X') => {
+    if (!Array.isArray(matrix) || !matrix.length) return;
+    const flat = matrix.flat();
+    const s = matrix.length;
+    setSize(s);
+    setBoard(flat);
+    setIsXNext(currentTurn === 'X');
+    setWinner(null);
+    setHistory([]);
+  };
+
+  return { board, size, isXNext, winner, history, handleClick, resetGame, hydrateBoard, makeMove, myRole, setMyRole };
 };
