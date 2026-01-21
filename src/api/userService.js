@@ -10,6 +10,9 @@ export const getLeaderboard = () => axiosClient.get("/users/leaderboard/");
 // Response: { username, elo, wins, losses, draws, avatar, full_name }
 export const getUserProfile = (userId) => axiosClient.get(`/users/${userId}/`);
 
+// Alias cho getUserProfile để đồng nhất với tên khác
+export const getUserById = getUserProfile;
+
 // Lấy profile của bản thân
 // GET /api/users/profile/
 // Response: { id, full_name, username, email, wins, losses, draws, elo, avatar }

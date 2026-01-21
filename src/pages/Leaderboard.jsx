@@ -1,12 +1,26 @@
+import { useEffect, useState } from "react";
+import { getLeaderboard } from "../api/userService";
 import "./Leaderboard.css";
 
-export default function Leaderboard({ onBack }) {
-  const players = [
-    { name: "Nguyễn Văn A", elo: 0, wins: 0, losses: 0, draws: 0 },
-    { name: "Trần Văn B", elo: 0, wins: 0, losses: 0, draws: 0 },
-    { name: "Lê Văn C", elo: 0, wins: 0, losses: 0, draws: 0 },
-    { name: "Phạm Văn D", elo: 0, wins: 0, losses: 0, draws: 0 },
-  ];
+export default function Leaderboard({ onBack, onViewProfile }) {
+  const [players, setPlayers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      try {
+        const response = await getLeaderboard();
+        setPlayers(response.data);
+      } catch (err) {
+        setError(err.response?.data?.message || "Không thể tải bảng xếp hạng");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLeaderboard();
+  }, []);
 
   return (
     <div className="leaderboard-bg">
@@ -17,31 +31,40 @@ export default function Leaderboard({ onBack }) {
 
         <h1>🏆 Bảng xếp hạng</h1>
 
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Người chơi</th>
-              <th>Elo</th>
-              <th>Thắng</th>
-              <th>Thua</th>
-              <th>Hòa</th>
-            </tr>
-          </thead>
+        {loading && <p>Loading...</p>}
+        {error && <p className="error">{error}</p>}
 
-          <tbody>
-            {players.map((p, i) => (
-              <tr key={i}>
-                <td>{i + 1}</td>
-                <td>{p.name}</td>
-                <td>{p.elo}</td>
-                <td>{p.wins}</td>
-                <td>{p.losses}</td>
-                <td>{p.draws}</td>
+        {!loading && !error && (
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Người chơi</th>
+                <th>Elo</th>
+                <th>Thắng</th>
+                <th>Thua</th>
+                <th>Hòa</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+              {players.map((p, i) => (
+                <tr 
+                  key={i}
+                  onClick={() => onViewProfile?.(p.id)}
+                  style={{ cursor: onViewProfile ? "pointer" : "default" }}
+                >
+                  <td>{i + 1}</td>
+                  <td>{p.username || p.full_name}</td>
+                  <td>{p.elo}</td>
+                  <td>{p.wins}</td>
+                  <td>{p.losses || 0}</td>
+                  <td>{p.draws || 0}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );

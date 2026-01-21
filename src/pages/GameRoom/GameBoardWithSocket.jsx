@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../../board/BoardContainer.css';
+import './GameRoom.css';
 import BoardGrid from '../../components/Board/Board';
 import GameInfo from '../../components/GameInfo/GameInfo';
 import { useGameLogic } from '../../hooks/useGameLogic';

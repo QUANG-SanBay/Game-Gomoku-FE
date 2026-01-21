@@ -1,6 +1,6 @@
 import { useState } from "react";
-import ProfileDashboard from "../components/ProfileDashboard";
-import Lobby from "../components/Lobby";
+import ProfileDashboard from "../components/ProfileDashboard/ProfileDashboard";
+import Lobby from "../components/Lobby/Lobby";
 
 function Home() {
   const [screen, setScreen] = useState("menu"); 
